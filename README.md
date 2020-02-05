@@ -22,13 +22,23 @@ $ sh build.sh
 This sample use two consoles to try interprocess communication by WebRTC.
 It maybe cannot communicate over NAT each other, because it does not use ICE server.
 
+## Basic Procedure
+
+1. Console 1 first do sdp1, and create message.
+2. Then, console 2 do sdp2, and put the message created by console 1 with sdp1 command. Then, console 2 will create answer for the message.
+3. Console 1 do sdp3, with the message created by console 2.
+4. Console 1 will call ice1 creating message.
+5. Console 2 will do ice2, and put the message from ice1. That will generate another message from console 2.
+6. Console 2 will do ice1, creating message.
+6. Console 1 will put the message from ice1 by console 2, and the connection will be established.
+
 ## Connection
 
 memo : On this sample, Some commands requireing parameter need line of only a semicolon after parameter.
 
 At CONSOLE-1.
 
-```sh
+``` sh
 $ cd <path to work>
 $ ./sample
 0x7fff791c9000:Main thread

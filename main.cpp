@@ -28,6 +28,9 @@
 // picojsonはコピペ用データ構造を作るために使う
 #include "picojson/picojson.h"
 
+// class "Connection" basically have:
+//  * peerconnection interface
+//  * datachannel interface
 class Connection {
  public:
   rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection;
@@ -300,6 +303,12 @@ void cmd_quit() {
   signaling_thread->Stop();
 }
 
+
+
+// main function
+// TODO:
+// 1. Stream Video with pre-implemented DataChannel
+// 2. Change the UI
 int main(int argc, char *argv[]) {
   webrtc::field_trial::InitFieldTrialsFromString("");
 
@@ -359,7 +368,7 @@ int main(int argc, char *argv[]) {
         cmd_quit();
         break;
       } else {
-        std::cout << "?" << line << std::endl;
+        std::cout << "Unknown Command." << line << std::endl;
       }
     } else {
       if (line == ";") {

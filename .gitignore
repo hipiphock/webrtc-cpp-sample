@@ -6,3 +6,4 @@ build/*
 CMakeFiles/*
 xcode/*
 local/*
+*.mp4
