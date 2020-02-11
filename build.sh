@@ -56,14 +56,25 @@ if [ "${IS_LINUX}" = 'true' ]; then
     export CXX=c++
 fi
 
-readonly BUILD_PATH=${ROOT_PATH}/build
+## Build client
+BUILD_PATH=${ROOT_PATH}/client/build
 mkdir -p ${BUILD_PATH}
-
 # cd ${ROOT_PATH}
 # git submodule init
 # git submodule update
-
 cd ${BUILD_PATH}
 cmake -DLIBWEBRTC_PATH=${LOCAL_ENV_PATH} ..
 make
-cp sample ${ROOT_PATH}
+cp client.out ${ROOT_PATH}
+
+
+## Build server
+BUILD_PATH=${ROOT_PATH}/server/build
+mkdir -p ${BUILD_PATH}
+# cd ${ROOT_PATH}
+# git submodule init
+# git submodule update
+cd ${BUILD_PATH}
+cmake -DLIBWEBRTC_PATH=${LOCAL_ENV_PATH} ..
+make
+cp server.out ${ROOT_PATH}

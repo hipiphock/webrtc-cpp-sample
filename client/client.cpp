@@ -26,7 +26,7 @@
 #include <system_wrappers/include/field_trial.h>
 
 // picojsonはコピペ用データ構造を作るために使う
-#include "picojson/picojson.h"
+#include "../picojson/picojson.h"
 
 // class "Connection" basically have:
 //  * peerconnection interface

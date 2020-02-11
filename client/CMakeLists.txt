@@ -50,14 +50,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Wno-unused-parameter")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
 # Disable RTTI
-set_source_files_properties(main.cpp PROPERTIES
+set_source_files_properties(client.cpp PROPERTIES
   COMPILE_FLAGS " -fno-rtti "
   )
 
-add_executable(sample
-  main.cpp
+add_executable(client.out
+  client.cpp
   )
 
-target_link_libraries(sample
+target_link_libraries(client.out
   ${webrtc_libs}
   )

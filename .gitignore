@@ -7,3 +7,6 @@ CMakeFiles/*
 xcode/*
 local/*
 *.mp4
+client/build/*
+server/build/*
+*.out
