@@ -127,3 +127,7 @@ quit
 ```
 
 EOD
+
+# Further TODO List:
+1. Separate client/server.
+2. Make client-server video streaming.
