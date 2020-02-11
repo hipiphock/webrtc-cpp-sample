@@ -253,7 +253,9 @@ void cmd_ice2(const std::string &parameter) {
   }
 }
 
+// TODO: change the cmd_send function to streaming function
 void cmd_send(const std::string &parameter) {
+  // 
   webrtc::DataBuffer buffer(rtc::CopyOnWriteBuffer(parameter.c_str(), parameter.size()), true);
   std::cout << "Send(" << connection.data_channel->state() << ")" << std::endl;
   connection.data_channel->Send(buffer);

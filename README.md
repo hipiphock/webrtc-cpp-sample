@@ -23,24 +23,24 @@ This sample use two consoles to try interprocess communication by WebRTC.
 It maybe cannot communicate over NAT each other, because it does not use ICE server.
 
 ## Basic Procedure
-
-1. Console 1 first do sdp1, and create message.
-2. Then, console 2 do sdp2, and put the message created by console 1 with sdp1 command. Then, console 2 will create answer for the message.
-3. Console 1 do sdp3, with the message created by console 2.
-4. Console 1 will call ice1 creating message.
-5. Console 2 will do ice2, and put the message from ice1. That will generate another message from console 2.
-6. Console 2 will do ice1, creating message.
-6. Console 1 will put the message from ice1 by console 2, and the connection will be established.
+This consists of two app: client and console.
+1. The **client** first do sdp1, and create message.
+2. Then, the **server** do sdp2, and put the message created by client with sdp1 command. Then, server will create answer for the message.
+3. The client then do sdp3, with the message created by server.
+4. The client will call ice1 creating message.
+5. The server will do ice2, and put the message from ice1. That will generate another message from server.
+6. The server will do ice1, creating message.
+6. The client will put the message from ice1 by server, and the connection will be established.
 
 ## Connection
 
 memo : On this sample, Some commands requireing parameter need line of only a semicolon after parameter.
 
-At CONSOLE-1.
+At client:
 
 ``` sh
 $ cd <path to work>
-$ ./sample
+$ ./client.out
 0x7fff791c9000:Main thread
 0x700000081000:RTC thread
 sdp1
@@ -73,11 +73,11 @@ ice2
 ;
 ```
 
-At CONSOLE-2.
+At server:
 
 ```sh
 $ cd <path to work>
-$ ./sample
+$ ./server.out
 0x7fff791c9000:Main thread
 0x700000081000:RTC thread
 sdp2
