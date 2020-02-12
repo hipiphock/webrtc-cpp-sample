@@ -1,0 +1,3 @@
+/home/dosmas/webrtc-cpp-sample/server/build/CMakeFiles/rebuild_cache.dir
+/home/dosmas/webrtc-cpp-sample/server/build/CMakeFiles/server.out.dir
+/home/dosmas/webrtc-cpp-sample/server/build/CMakeFiles/edit_cache.dir
