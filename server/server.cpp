@@ -255,7 +255,12 @@ void cmd_ice2(const std::string &parameter) {
 
 // TODO: change the cmd_send function to streaming function
 void cmd_send(const std::string &parameter) {
-  // 
+
+  // Need to create binary DataBuffer to stream video
+  // webrtc::DataBuffer video_buffer = webrtc::DataBuffer(rtc::CopyOnWriteBuffer(), true);
+
+
+
   webrtc::DataBuffer buffer(rtc::CopyOnWriteBuffer(parameter.c_str(), parameter.size()), true);
   std::cout << "Send(" << connection.data_channel->state() << ")" << std::endl;
   connection.data_channel->Send(buffer);
@@ -332,24 +337,18 @@ int main(int argc, char *argv[]) {
       } else if (line == "quit") {
         cmd_quit();
         break;
-      } else {
-        std::cout << "Unknown Command." << line << std::endl;
-      }
+      } else  std::cout << "Unknown Command." << line << std::endl;
     } else {
       if (line == ";") {
-        if (command == "sdp2") {
+        if (command == "sdp2")
           cmd_sdp2(parameter);
-        } else if (command == "ice2") {
+        else if (command == "ice2")
           cmd_ice2(parameter);
-        } else if (command == "send") {
+        else if (command == "send")
           cmd_send(parameter);
-        }
-
         parameter   = "";
         is_cmd_mode = true;
-      } else {
-        parameter += line + "\n";
-      }
+      } else  parameter += line + "\n";
     }
   }
 
