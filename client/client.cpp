@@ -200,7 +200,7 @@ rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_facto
 webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 Connection connection;
 
-void cmd_sdp1() {
+void sdp_offer() {
   connection.peer_connection =
       peer_connection_factory->CreatePeerConnection(configuration, nullptr, nullptr, &connection.pco);
 
@@ -290,10 +290,11 @@ int main(int argc, char *argv[]) {
   std::cout << std::this_thread::get_id() << ":"
             << "Main thread" << std::endl;
 
-  // GoogleのSTUNサーバを利用
+  // Use Google Stun Server
   webrtc::PeerConnectionInterface::IceServer ice_server;
   ice_server.uri = "stun:stun.l.google.com:19302";
   configuration.servers.push_back(ice_server);
+
 
   rtc::InitializeSSL();
 
@@ -324,7 +325,7 @@ int main(int argc, char *argv[]) {
       if (line == "") {
         continue;
       } else if (line == "sdp1") {
-        cmd_sdp1();
+        sdp_offer();
       } else if (line == "sdp3") {
         command     = "sdp3";
         is_cmd_mode = false;
@@ -339,24 +340,18 @@ int main(int argc, char *argv[]) {
       } else if (line == "quit") {
         cmd_quit();
         break;
-      } else {
-        std::cout << "Unknown Command." << line << std::endl;
-      }
+      } else std::cout << "Unknown Command." << line << std::endl;
     } else {
       if (line == ";") {
-        if (command == "sdp3") {
+        if (command == "sdp3")
           cmd_sdp3(parameter);
-        } else if (command == "ice2") {
+        else if (command == "ice2")
           cmd_ice2(parameter);
-        } else if (command == "send") {
+        else if (command == "send")
           cmd_send(parameter);
-        }
-
         parameter   = "";
         is_cmd_mode = true;
-      } else {
-        parameter += line + "\n";
-      }
+      } else parameter += line + "\n";
     }
   }
 

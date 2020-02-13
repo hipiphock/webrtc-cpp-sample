@@ -200,7 +200,7 @@ rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_facto
 webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 Connection connection;
 
-void cmd_sdp2(const std::string &parameter) {
+void create_peer_connection(const std::string &parameter) {
   connection.peer_connection =
       peer_connection_factory->CreatePeerConnection(configuration, nullptr, nullptr, &connection.pco);
 
@@ -255,12 +255,6 @@ void cmd_ice2(const std::string &parameter) {
 
 // TODO: change the cmd_send function to streaming function
 void cmd_send(const std::string &parameter) {
-
-  // Need to create binary DataBuffer to stream video
-  // webrtc::DataBuffer video_buffer = webrtc::DataBuffer(rtc::CopyOnWriteBuffer(), true);
-
-
-
   webrtc::DataBuffer buffer(rtc::CopyOnWriteBuffer(parameter.c_str(), parameter.size()), true);
   std::cout << "Send(" << connection.data_channel->state() << ")" << std::endl;
   connection.data_channel->Send(buffer);
@@ -281,22 +275,20 @@ void cmd_quit() {
 
 
 // main function
-// TODO:
-// 1. Stream Video with pre-implemented DataChannel
-// 2. Change the UI
 int main(int argc, char *argv[]) {
   webrtc::field_trial::InitFieldTrialsFromString("");
 
   std::cout << std::this_thread::get_id() << ":"
             << "Main thread" << std::endl;
 
-  // GoogleのSTUNサーバを利用
+  // Use Google Stun Server
   webrtc::PeerConnectionInterface::IceServer ice_server;
   ice_server.uri = "stun:stun.l.google.com:19302";
   configuration.servers.push_back(ice_server);
 
   rtc::InitializeSSL();
 
+  // 1. Create worker & signaling thread
   network_thread = rtc::Thread::CreateWithSocketServer();
   network_thread->Start();
   worker_thread = rtc::Thread::Create();
@@ -307,6 +299,8 @@ int main(int argc, char *argv[]) {
   dependencies.network_thread   = network_thread.get();
   dependencies.worker_thread    = worker_thread.get();
   dependencies.signaling_thread = signaling_thread.get();
+
+  // 2. create peerconnecitonfactory
   peer_connection_factory       = webrtc::CreateModularPeerConnectionFactory(std::move(dependencies));
 
   if (peer_connection_factory.get() == nullptr) {
@@ -314,6 +308,25 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  // 3. create video track
+  std::string vod_url;
+  std::string aud_url;
+  // 3.1. create track
+  rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track;
+  rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track;
+  // TODO: create proper VideoTrackSourceInterface and AudioSourceInterface
+  video_track = peer_connection_factory->CreateVideoTrack(vod_url, NULL);
+  audio_track = peer_connection_factory->CreateAudioTrack(aud_url, NULL);
+  // 3.2. create stream
+  std::string tmpstring;
+  rtc::scoped_refptr<webrtc::MediaStreamInterface> stream = peer_connection_factory->CreateLocalMediaStream(tmpstring);
+  stream->AddTrack(video_track);
+  stream->AddTrack(audio_track);
+
+  connection.peer_connection->AddStream(stream);
+  connection.peer_connection->CommitStreamChanges();
+
+  // 4. signalling
   std::string line;
   std::string command;
   std::string parameter;
@@ -341,7 +354,7 @@ int main(int argc, char *argv[]) {
     } else {
       if (line == ";") {
         if (command == "sdp2")
-          cmd_sdp2(parameter);
+          create_peer_connection(parameter);
         else if (command == "ice2")
           cmd_ice2(parameter);
         else if (command == "send")
