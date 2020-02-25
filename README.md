@@ -1,16 +1,15 @@
 # WebRTC C++ sample
-Sample program for using WebRTC(DataChannel) on C++.
+**This work is origined from https://github.com/llamerada-jp/webrtc-cpp-sample.git by Yuji Ito.**
+This is an example program using WebRTC(DataChannel) on C++.
 
 # Requirement
-
 * Mac OSX
 * Ubuntu
 
 # Compile
-
-```sh
+``` sh
 $ cd <path to work>
-$ git clone --depth 1 https://github.com/llamerada-jp/webrtc-cpp-sample.git
+$ git clone --depth 1 https://github.com/hipiphock/webrtc-cpp-sample.git
 $ cd webrtc-cpp-sample
 $ git submodule init
 $ git submodule update
@@ -18,12 +17,12 @@ $ sh build.sh
 ```
 
 # Run
-
-This sample use two consoles to try interprocess communication by WebRTC.
-It maybe cannot communicate over NAT each other, because it does not use ICE server.
+The example consists of two programs: server and client.
+Each of them uses a console to do interprocess communication by WebRTC.
+It may not communicate over NAT each other, because it does not use ICE server.
 
 ## Basic Procedure
-This consists of two app: client and console.
+This consists of two app: client and server.
 1. The **client** first do sdp1, and create message.
 2. Then, the **server** do sdp2, and put the message created by client with sdp1 command. Then, server will create answer for the message.
 3. The client then do sdp3, with the message created by server.
@@ -33,7 +32,6 @@ This consists of two app: client and console.
 6. The client will put the message from ice1 by server, and the connection will be established.
 
 ## Connection
-
 memo : On this sample, Some commands requireing parameter need line of only a semicolon after parameter.
 
 At client:
@@ -109,28 +107,26 @@ ice1
 ```
 
 ## Send message
-
 You can send messages, after connection is enabled.
-
 ```
 send
 Hello world.
 ;
 ```
+make sure that you put ";" on your last word.
 
 ## Quit
-
 You can watch sequence of quit by typing of "quit".
-
 ```
 quit
 ```
 
-EOD
+# Current Issues in this work
+ * server.out is having problem(seg fault). Going to fix it soon.
 
 # Further TODO List:
-1. Separate client/server.
-2. Make client-server video streaming.
+1. Implement client-server video streaming.
+2. Do the video streaming directly from frame buffer.
 
 display engine - out monitor - fetching api?
 frame buffer - how to fetch?

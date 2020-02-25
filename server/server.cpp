@@ -324,7 +324,7 @@ int main(int argc, char *argv[]) {
   stream->AddTrack(audio_track);
 
   connection.peer_connection->AddStream(stream);
-  connection.peer_connection->CommitStreamChanges();
+  // connection.peer_connection->CommitStreamChanges();
 
   // 4. signalling
   std::string line;
