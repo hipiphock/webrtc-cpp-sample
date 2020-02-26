@@ -127,6 +127,7 @@ quit
 # Further TODO List:
 1. Implement client-server video streaming.
 2. Do the video streaming directly from frame buffer.
+3. Separate classes and methods to other cpp, h files.
 
 display engine - out monitor - fetching api?
 frame buffer - how to fetch?

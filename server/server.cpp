@@ -28,6 +28,7 @@
 // picojsonはコピペ用データ構造を作るために使う
 #include "../picojson/picojson.h"
 
+// MAIN MANAGING CLASS
 // class "Connection" basically have:
 //  * peerconnection interface
 //  * datachannel interface
@@ -200,7 +201,7 @@ rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_facto
 webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 Connection connection;
 
-void create_peer_connection(const std::string &parameter) {
+void create_answer(const std::string &parameter) {
   connection.peer_connection =
       peer_connection_factory->CreatePeerConnection(configuration, nullptr, nullptr, &connection.pco);
 
@@ -272,8 +273,6 @@ void cmd_quit() {
   signaling_thread->Stop();
 }
 
-
-
 // main function
 int main(int argc, char *argv[]) {
   webrtc::field_trial::InitFieldTrialsFromString("");
@@ -300,31 +299,36 @@ int main(int argc, char *argv[]) {
   dependencies.worker_thread    = worker_thread.get();
   dependencies.signaling_thread = signaling_thread.get();
 
-  // 2. create peerconnecitonfactory
+  // 2. create PeerConnecitonFactory
   peer_connection_factory       = webrtc::CreateModularPeerConnectionFactory(std::move(dependencies));
+  // Modular means thread in here
 
   if (peer_connection_factory.get() == nullptr) {
     std::cout << "Error on CreateModularPeerConnectionFactory." << std::endl;
     return EXIT_FAILURE;
   }
 
-  // 3. create video track
-  std::string vod_url;
-  std::string aud_url;
-  // 3.1. create track
-  rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track;
-  rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track;
-  // TODO: create proper VideoTrackSourceInterface and AudioSourceInterface
-  video_track = peer_connection_factory->CreateVideoTrack(vod_url, NULL);
-  audio_track = peer_connection_factory->CreateAudioTrack(aud_url, NULL);
+  /**
+  // ERROR WITH CREATING VIDEO TRACK
+  // 3. create media stream
+  std::string vod_url = "https://youtu.be/LlJeA2j2nww";
+  // 3.1. create stream
+  std::string track_label;
+  rtc::scoped_refptr<webrtc::VideoTrackSourceInterface> video_source;
+  // 3.2. create track
+  rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track 
+      = peer_connection_factory->CreateVideoTrack(track_label, video_source);  
   // 3.2. create stream
-  std::string tmpstring;
-  rtc::scoped_refptr<webrtc::MediaStreamInterface> stream = peer_connection_factory->CreateLocalMediaStream(tmpstring);
+  std::string stream_id;
+  rtc::scoped_refptr<webrtc::MediaStreamInterface> stream 
+      = peer_connection_factory->CreateLocalMediaStream(stream_id);
   stream->AddTrack(video_track);
-  stream->AddTrack(audio_track);
-
   connection.peer_connection->AddStream(stream);
-  // connection.peer_connection->CommitStreamChanges();
+
+  Problems:
+  1. creating appropriate tracks
+  2. streaming after peer connection is made
+  **/
 
   // 4. signalling
   std::string line;
@@ -354,7 +358,7 @@ int main(int argc, char *argv[]) {
     } else {
       if (line == ";") {
         if (command == "sdp2")
-          create_peer_connection(parameter);
+          create_answer(parameter);
         else if (command == "ice2")
           cmd_ice2(parameter);
         else if (command == "send")

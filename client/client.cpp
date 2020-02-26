@@ -200,7 +200,7 @@ rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_facto
 webrtc::PeerConnectionInterface::RTCConfiguration configuration;
 Connection connection;
 
-void sdp_offer() {
+void create_offer() {
   connection.peer_connection =
       peer_connection_factory->CreatePeerConnection(configuration, nullptr, nullptr, &connection.pco);
 
@@ -325,7 +325,7 @@ int main(int argc, char *argv[]) {
       if (line == "") {
         continue;
       } else if (line == "sdp1") {
-        sdp_offer();
+        create_offer();
       } else if (line == "sdp3") {
         command     = "sdp3";
         is_cmd_mode = false;
